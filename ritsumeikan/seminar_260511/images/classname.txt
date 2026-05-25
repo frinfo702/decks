@@ -1,0 +1,9 @@
+nomber, classnames
+0, 'Oculus' 'Ukulele'
+1, 'VR Headset' 'Ukulele'
+2, 'dog'
+3, 'Labrador Retriever' 'Golden Retriever' 'German Shepherd' 'Belgian Malinois' 'Rottweiler' 'Doberman Pinscher' 'Boxer' 'Pit Bull Terrier' 'American Staffordshire Terrier' 'Beagle' 'Dachshund' 'Border Collie' 'Australian Shepherd' 'Chow Chow' 'Shiba Inu' 'Akita' 'Siberian Husky' 'Indian Pariah Dog' 'Street Dog' 'Mixed Breed'
+4, 'person holding a blue umbrella'
+5, 'person holding a black umbrella'
+6, 'djungarian' 'campbell' 'hybrid'
+7, 'dogs'
