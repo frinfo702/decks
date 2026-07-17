@@ -1,0 +1,21 @@
+{
+  "name": "ritsumeikan-seminar-260714-slidev",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "build:single": "slidev build --router-mode hash && bun scripts/export-single.mjs",
+    "export": "slidev export",
+    "verify:single": "bun scripts/verify-single.mjs"
+  },
+  "dependencies": {
+    "@slidev/cli": "^52.18.0",
+    "@slidev/theme-default": "latest",
+    "vue": "^3.5.33"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.61.1",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
