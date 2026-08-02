@@ -10,3 +10,5 @@ output/pdf/*
 !output/pdf/*.pdf
 node_modules/*
 plots/*
+__pycache__/
+*.py[cod]
