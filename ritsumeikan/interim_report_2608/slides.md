@@ -307,33 +307,36 @@ class: content-slide
 
 **物体検索と関係判定を分離し、候補ペアをRel3Dで再順位付けする。**
 
-> **Query parse** → **LangSplat × 2** → **Geometry** → **Rel3D MLP** → **Render**
-
-| Parse | Retrieve | Classify |
-|---|---|---|
-| `q = (coffee, next to, apple)` | subjectとanchorを別々に検索 | candidate pair → relation probability |
+```mermaid {scale: 0.7}
+%%{init: {"flowchart": {"nodeSpacing": 16, "rankSpacing": 24}, "themeVariables": {"fontSize": "14px"}}}%%
+flowchart LR
+  Q["coffee next to apple"] --> P["Query parse"]
+  P -- "subject" --> LS1["LangSplat: coffee"]
+  P -- "anchor" --> LS2["LangSplat: apple"]
+  LS1 -- "subject Gaussian群" --> A["Geometry adapter"]
+  LS2 -- "anchor Gaussian群" --> A
+  A --> M["Rel3D MLP"]
+  P -- "relation" --> R["render"]
+  M --> R
+```
 
 $$
 p(r\mid s,a)=\operatorname{softmax}\!\left(g_\theta([\mathbf f_s,\mathbf f_a])\right)
 $$
 
-LangSplatは「どこに何があるか」、Rel3Dは「2物体がどの関係にあるか」を担当する。
+Geometry adapterは、LangSplatが返すGaussian群を物体単位に集約し、中心・姿勢・寸法を推定する。
+座標系をそろえ、subjectとanchorを9次元ずつ表して結合したRel3D用18次元特徴へ変換する。
 
-<!--
-入力をsubject、relation、anchorへ分解します。subjectとanchorをLangSplatで別々に検索し、候補Gaussian群から幾何特徴を作ります。
-Rel3DのMLPは候補ペアの関係確率を出し、クエリと一致するペアだけを残します。
-この分離により、LangSplat自体をend-to-endで再学習せずに、関係判定を追加できます。
+Rel3DのMLPは候補ペアの関係確率を出し、クエリと一致するペアだけを残す
+この分離により、LangSplat自体をend-to-endで再学習せずに、関係判定を追加できる(?)
 
-[Sources]
-- Goyal et al., "Rel3D: A Minimally Contrastive Benchmark for Grounding Spatial Relations in 3D," NeurIPS 2020. https://papers.nips.cc/paper/2020/file/76dc611d6ebaafc66cc0879c71b5db5c-Paper.pdf
-- Qin et al., "LangSplat: 3D Language Gaussian Splatting," CVPR 2024. https://openaccess.thecvf.com/content/CVPR2024/papers/Qin_LangSplat_3D_Language_Gaussian_Splatting_CVPR_2024_paper.pdf
--->
+- [Goyal et al., "Rel3D: A Minimally Contrastive Benchmark for Grounding Spatial Relations in 3D," NeurIPS 2020.](https://papers.nips.cc/paper/2020/file/76dc611d6ebaafc66cc0879c71b5db5c-Paper.pdf)
 
 ---
 class: content-slide
 ---
 
-# Rel3Dへ渡す18次元特徴
+# Rel3Dの統合
 
 <img class="w-full h-[150px] object-cover object-top mt-1" src="./assets/source/papers/rel3d-mlp-examples.png" alt="Rel3D MLPの成功例と失敗例">
 
