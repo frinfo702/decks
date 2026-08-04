@@ -1,0 +1,14 @@
+# Collected data, source images, plots, dependencies, and authoring files stay local.
+# Track only this policy and final HTML/PDF exports.
+data
+dist/*
+!dist/*.html
+!output/
+output/*
+!output/pdf/
+output/pdf/*
+!output/pdf/*.pdf
+node_modules/*
+plots/*
+__pycache__/
+*.py[cod]
