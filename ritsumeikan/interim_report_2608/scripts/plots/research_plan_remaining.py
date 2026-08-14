@@ -26,6 +26,10 @@ PHASE_LABELS = {
     "Thesis writing": "論文執筆",
 }
 
+PHASE_END_DATES = {
+    "Implementation experiments and validation": "2026-11-15",
+}
+
 
 def main() -> None:
     configure()
@@ -40,7 +44,9 @@ def main() -> None:
     display_rows = list(reversed(rows))
     for index, row in enumerate(display_rows):
         row_start = datetime.fromisoformat(row["start_date"])
-        row_end = datetime.fromisoformat(row["end_date"])
+        row_end = datetime.fromisoformat(
+            PHASE_END_DATES.get(row["phase"], row["end_date"])
+        )
         ax.barh(
             index,
             (row_end - row_start).days + 1,
@@ -60,10 +66,14 @@ def main() -> None:
         date(2026, 9, 1),
         date(2026, 10, 1),
         date(2026, 11, 1),
+        date(2026, 11, 15),
         date(2026, 12, 1),
         date(2026, 12, 31),
     ]
-    ax.set_xticks(ticks, ["8/1", "9/1", "10/1", "11/1", "12/1", "12/31"])
+    ax.set_xticks(
+        ticks,
+        ["8/1", "9/1", "10/1", "11/1", "11/15", "12/1", "12/31"],
+    )
     ax.grid(axis="x", color=GRID, linewidth=0.8)
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
