@@ -85,12 +85,12 @@ class: content-slide
 
 ::bottom::
 
-8月1日から実装・実験・検証を続け、11月1日から12月31日まで論文を執筆する。
+8月1日から11月15日まで実装・実験・検証を続け、11月1日から12月31日まで論文を執筆する。
 
 <!--
 4–5月: OV-Seg / OVSAM3 の再現。6月: 3D シーン検索へ方向を絞る。7月: LangSplat の
 環境構築・再現・失敗解析と、実験追跡 (DagsHub/MLflow) ・データ整備 (LERF-OVS) を完了。
-8月1日から10月31日までは、五シーン再現を閉じた後、関係ベースライン → パーサー → 統合 → 評価へ進みます。
+8月1日から11月15日までは、五シーン再現を閉じた後、関係ベースライン → パーサー → 統合 → 評価へ進みます。
 11月1日から12月31日までは論文執筆に取り組みます。
 -->
 
@@ -131,7 +131,7 @@ SAM3 マスク + 微調整済み CLIP の OVSAM3 は 25.68 で R-101 構成を�
 class: content-slide
 ---
 
-# LangSplat
+# [LangSplat](https://langsplat.github.io/) CVPR 2024 Highligth
 
 3D Gaussian Splattingの各Gaussianに、CLIP由来の言語特徴を追加する。
 
@@ -279,23 +279,55 @@ class: content-slide
 
 <img class="w-full h-[310px] object-contain" src="./plots/dagshub_loss_autoencoder.png" alt="オートエンコーダのシーン別学習損失">
 
+*Autoencoder · training loss*
 
 ::right::
 
 <img class="w-full h-[310px] object-contain" src="./plots/dagshub_loss_language_gaussian.png" alt="Language Gaussianのシーン別学習損失">
 
+*Language Gaussian · training loss*
 
 ::bottom::
 
-圧縮器と3D言語特徴の両段階でlossが低下し、学習パイプラインが動作することを確認した。
+3シーンのAutoencoderと、waldo kitchen Level 3以外のLanguage Gaussianが完了した。
 
 <!--
-Autoencoderは完了済みのfigurinesとramenを比較し、未完了のwaldo kitchenは除外しています。
-Language Gaussianは完了した特徴レベル1を比較しています。teatimeは履歴点が1点のみのため折れ線に含めていません。
+Autoencoderは完了済みのfigurines、ramen、waldo kitchenを比較しています。
+Language Gaussianは完了済みのfigurines Level 1–3、ramen Level 1–3、waldo kitchen Level 1–2を比較しています。
+waldo kitchen Level 3は学習中のため除外しています。色はscene、線種はLevelを表します。
+teatimeはsmoke runの単一点のみであるため比較対象外です。
 
 [Sources]
 - data/processed/dagshub_canonical_runs.csv
 - data/raw/dagshub_metric_history.csv
+-->
+
+---
+class: content-slide
+---
+
+# evaluation
+
+**LERF-OVS · mask threshold = 0.4 · 単位は%（差はpercentage point）**
+
+| scene | metric | 論文 | 再現 | 差 |
+|---|---|---:|---:|---:|
+| figurines | Localization Accuracy | 80.4 | **69.6** | **−10.8** |
+| figurines | mIoU | 44.7 | **46.4** | **+1.7** |
+| ramen | Localization Accuracy | 73.2 | **63.4** | **−9.8** |
+| ramen | mIoU | 51.2 | **46.8** | **−4.4** |
+
+figurinesではmIoUが論文値を1.7 pt上回った一方、Localization Accuracyは両sceneで下回った。
+
+<!--
+再現値はDagsHubの完了済みeval runから取得し、小数第1位へ丸めています。
+waldo kitchenは未評価のため表に含めていません。
+
+[Sources]
+- Qin et al., "LangSplat: 3D Language Gaussian Splatting," CVPR 2024, Tables 1-2. https://openaccess.thecvf.com/content/CVPR2024/papers/Qin_LangSplat_3D_Language_Gaussian_Splatting_CVPR_2024_paper.pdf
+- data/raw/dagshub_runs.csv
+- data/raw/dagshub_latest_metrics.csv
+- data/raw/dagshub_parameters.csv
 -->
 
 
@@ -407,11 +439,11 @@ LangSplatの再現を基盤に、「物体検索」と「関係判定」を分�
 
 - 完了: OV-Seg 再現（論文値一致）、OVSAM3 評価、LangSplat 環境構築と公開 checkpoint の再現、DagsHub / MLflow 追跡、LERF-OVS データ整備
 - 進行中: 五シーン再現パイプライン
-- 8月1日〜10月31日: 18次元adapter → Rel3D ベースライン → クエリパーサー → 統合 → 実験・検証
+- 8月1日〜11月15日: 18次元adapter → Rel3D ベースライン → クエリパーサー → 統合 → 実験・検証
 - 11月1日〜12月31日: 論文執筆・修正
 
 <!--
 まずLangSplatの再現を閉じ、単体物体のlocalizationを信頼できる基準にします。
 次に関係クエリを三つ組へ分解し、LangSplatの候補Gaussian群をRel3Dの18次元入力へ変換します。
-10月31日までに実装・実験・検証を進め、11月1日から論文執筆へ移ります。
+11月15日まで実装・実験・検証を進め、11月1日から論文執筆も並行して進めます。
 -->

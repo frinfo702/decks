@@ -79,7 +79,16 @@ def add_header(fig: plt.Figure, title: str, subtitle: str) -> None:
         ha="left",
         va="top",
     )
-    fig.text(0.07, 0.84, subtitle, fontsize=12.5, color=MUTED, ha="left", va="top")
+    if subtitle:
+        fig.text(
+            0.07,
+            0.84,
+            subtitle,
+            fontsize=12.5,
+            color=MUTED,
+            ha="left",
+            va="top",
+        )
 
 
 def japanese_month(value: float, _position: float | None = None) -> str:
@@ -274,13 +283,11 @@ def plot_dagshub_loss(stage_label: str, predicate, stem: str) -> None:
         "waldo_kitchen": PINK,
         "teatime": OLIVE,
     }
+    level_styles = {"1": "-", "2": "--", "3": ":"}
     fig, ax = plt.subplots(figsize=(9, 5.5))
-    fig.subplots_adjust(left=0.14, right=0.94, top=0.72, bottom=0.20)
-    add_header(
-        fig,
-        f"{stage_label} 学習損失",
-        "完了済みrunのみ・総損失・対数尺度・2026年8月2日取得",
-    )
+    fig.subplots_adjust(left=0.14, right=0.94, top=0.80, bottom=0.20)
+    add_header(fig, "Loss", "")
+    plotted_count = 0
     for run_name, run in sorted(canonical.items()):
         if run["status"] != "FINISHED" or not predicate(run_name):
             continue
@@ -291,11 +298,21 @@ def plot_dagshub_loss(stage_label: str, predicate, stem: str) -> None:
         smoothed = moving_average(values)
         scene = dagshub_scene(run_name)
         label = SCENE_LABELS[scene]
+        linestyle = "-"
         if "-feature-level-" in run_name:
-            label += f" · L{run_name.rsplit('-', maxsplit=1)[-1]}"
+            level = run_name.rsplit("-", maxsplit=1)[-1]
+            label += f" · L{level}"
+            linestyle = level_styles[level]
         color = scene_colors[scene]
         ax.plot(steps, values, color=color, linewidth=0.7, alpha=0.12)
-        ax.plot(steps, smoothed, color=color, linewidth=2.2, label=label)
+        ax.plot(
+            steps,
+            smoothed,
+            color=color,
+            linestyle=linestyle,
+            linewidth=2.2,
+            label=label,
+        )
         ax.scatter(
             steps[-1],
             smoothed[-1],
@@ -305,6 +322,7 @@ def plot_dagshub_loss(stage_label: str, predicate, stem: str) -> None:
             linewidth=0.5,
             zorder=3,
         )
+        plotted_count += 1
     ax.set_yscale("log")
     ax.grid(color=GRID, linewidth=0.8)
     ax.set_axisbelow(True)
@@ -318,7 +336,12 @@ def plot_dagshub_loss(stage_label: str, predicate, stem: str) -> None:
             )
         )
     )
-    ax.legend(frameon=False, fontsize=10.5, loc="best")
+    ax.legend(
+        frameon=False,
+        fontsize=9.5 if plotted_count > 5 else 10.5,
+        ncol=2 if plotted_count > 5 else 1,
+        loc="best",
+    )
     save(fig, stem)
 
 

@@ -523,7 +523,9 @@ def collect_dagshub() -> None:
                     for character in run_name
                 ).strip("-")
                 run_directory = DAGSHUB_ASSETS / f"{safe_name}--{run_id[:8]}"
-                client.download_artifacts(run_id, "images", dst_path=run_directory)
+                images_directory = run_directory / "images"
+                if run_status == "RUNNING" or not images_directory.exists():
+                    client.download_artifacts(run_id, "images", dst_path=run_directory)
                 for path in sorted((run_directory / "images").rglob("*")):
                     if not path.is_file():
                         continue

@@ -9,10 +9,10 @@ import numpy as np
 
 from _common import (
     BLUE,
-    BLUE_LIGHT,
     GOLD,
     GRID,
     INK,
+    PINK,
     PROCESSED,
     SCENE_LABELS,
     add_header,
@@ -36,11 +36,12 @@ def main() -> None:
     rows.sort(key=lambda row: float(row["final_psnr"]))
     labels = [SCENE_LABELS[row["scene"]] for row in rows]
     values = [float(row["final_psnr"]) for row in rows]
-    colors = [BLUE_LIGHT, GOLD, BLUE]
+    scene_colors = {"figurines": BLUE, "ramen": GOLD, "waldo_kitchen": PINK}
+    colors = [scene_colors[row["scene"]] for row in rows]
 
     fig, ax = plt.subplots(figsize=(9, 5.5))
-    fig.subplots_adjust(left=0.25, right=0.92, top=0.72, bottom=0.18)
-    add_header(fig, "RGB 3DGS 再構成品質", "完了済み実行の最終PSNR・30,000ステップ")
+    fig.subplots_adjust(left=0.25, right=0.92, top=0.80, bottom=0.18)
+    add_header(fig, "PSNR", "")
     bars = ax.barh(
         np.arange(len(rows)),
         values,
